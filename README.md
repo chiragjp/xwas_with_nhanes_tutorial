@@ -19,7 +19,7 @@
 - Packages: survey, tidyverse, knitr, and broom
 
 ### Execution
-- download 'xwas_tutorial.Rmd' in RStudio from here: https://github.com/chiragjp/xwas_with_nhanes_tutorial
+- download 'xwas_tutorial.Rmd' in RStudio from here: https://github.com/chiragjp/xwas_with_nhanes_tutorial/blob/master/xwas_tutorial.Rmd
 - knit the .Rmd in Rstudio 
 - or download a pre-knitted file: https://github.com/chiragjp/xwas_with_nhanes_tutorial/blob/master/xwas_tutorial.html
 

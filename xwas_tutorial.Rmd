@@ -1,0 +1,252 @@
+---
+title: "Introduction to XWAS with NHANES (survey) data"
+output:
+  html_document: default
+  html_notebook: default
+---
+
+
+## Implement code to execute an X-wide association study (XWAS)! 
+- we will implement starter code to execute an X-wide association study (XWAS) analysis to  exposure variables associated with telomere length in NHANES 1999-2002 participants
+- X-wide association study (XWAS) is a data-driven method to find what variables in the set 'X' are associated with a phenotype (call it Y, e.g., telomere length)
+- What are telomeres?: https://en.wikipedia.org/wiki/Telomere
+
+### Contact information:
+- Chirag J Patel (chirag <at> hms dot harvard dot edu)
+- Twitter: @chiragjp
+- GitHub: @chiragjp
+- web: http://www.chiragjpgroup.org 
+
+
+### First, install and download the packages required for analysis
+- R tidyverse: https://www.tidyverse.org
+- survey: http://r-survey.r-forge.r-project.org/survey/
+```{r, eval=FALSE}
+> install.packages('survey')
+> install.packages('tidyverse')
+> install.packages('broom')
+> install.packages('knitr')
+```
+
+
+### Load in the NHANES 1999-2006 data
+- This file contains 3 data frames from the National Health and Nutrition Examination Survey (NHANES)
+- Please cite Patel CJ, Scientific Data 2017: https://www.nature.com/articles/sdata201696
+- See also the repository for more information: https://github.com/chiragjp/nhanes_scidata
+
+
+```{r}
+library(survey)
+library(tidyverse)
+library(broom)
+
+load(url('https://github.com/chiragjp/nhanes_scidata/blob/master/nh_99-06.Rdata?raw=true'))
+## lets look at the contents
+ls()
+```
+
+### Three data.frames compose the NHANES data
+1. `MainTable`: the main table (41741 participants by 1141 variables)
+2. `DemoVariables`: demographic variables
+3. `VarDescription`: the data catalog - the descriptions of the variables
++ `var` corresponds to the column name
++ `var_desc` is the human-readable description
++ `category` is the 'category' of variable
+```{r}
+head(DemoVariables) 
+head(VarDescription)[, c('var', 'var_desc', 'category', 'series')]
+#head(MainTable)
+```
+### Examine the data dictionary for NHANES
+- to execute the XWAS, we need to locate the columns to use in the analysis.
+- First, what is the outcome variable ('telomere length') codified as? Let's refer to the `VarDescription` table.
+
+```{r}
+VarDescription[grep("telomere", VarDescription$var_desc, ignore.case=T), ]
+```
+
+Mean telomere length is codified as `TELOMEAN` in the `MainTable` by looking at the `VarDescription$var` column. From the `VarDescription$series` column we can also see that the 1999-2000 and 2001-2002 cohorts are associated with this measurement.
+
+To focus on an XWAS on `TELOMEAN`, we will only focus only on variables present in these two cohorts where the mean telomere length (`TELOMEAN`) was measured.
+
+```{r}
+VarDescription.telo <- subset(VarDescription, series == '1999-2000' | series == '2001-2002')
+```
+
+Quick check on what this looks like by tabulating the `data.frame`. 
+
+```{r}
+sort(table(VarDescription.telo$category))
+dotchart(sort(table(VarDescription.telo$category)))
+```
+
+### XWAS implementation! 
+
+#### Data preparation
+##### 1: Identify the biomarkers of exposure - the X variables
+
+For the sake of demonstration, we will just define the 'X' variables as those in the following categories:
+
+- heavy metals
+- PCBs
+
+```{r}
+useTheseCategories <- c( 'heavy metals','pcbs')
+useTheseCategories <- sort(useTheseCategories) # store pre-sorted for easier processing
+VarDescription.telo <- VarDescription.telo[VarDescription.telo$category %in% useTheseCategories, ]
+```
+
+
+##### 2: identify the 'adjustment' variables
+We're close to performing the actual XWAS but will now define specific co-variates to adjust for in each regression. The vector is defined below as `adjustfor` and then the combined with unique co-variates in our cohort as well as the dependent variable of mean telomere length we are interested in studying (`TELOMEAN`). 
+
+We are also going to derive a new variable `RIDAGEYR2` which is the age-squared to adjust for non-linear effects associated with age.
+
+```{r}
+MainTable$RIDAGEYR2 <- MainTable$RIDAGEYR^2
+```
+
+The `newData` variable will contain all the pertinent records for analysis. 
+
+```{r}
+adjustfor <- c('RIDAGEYR', 'RIDAGEYR2', 'female', 'mexican', 'black', 'other_eth', 'other_hispanic', 'INDFMPIR')
+exposureVars <- unique(VarDescription.telo$var)
+exposureVars <- setdiff(exposureVars, c("LBXDFS", "LBXDFSF","LBDDWS" )) ## lets remove the dust exposures for now
+variablesToKeep <- c(exposureVars, 'TELOMEAN', adjustfor, 'SDMVPSU', 'SDMVSTRA', 'WTMEC2YR', 'WTMEC4YR')
+
+newData <- subset(MainTable, SDDSRVYR <= 2)[, variablesToKeep] ## only keep those that are going to be analyzed (for simplicity)
+newData <- subset(newData, WTMEC4YR > 0) ## only keep those that have >0 weights (for later)
+ # create the survey design object - this will account for the stratification of the survey
+dsn <- svydesign(ids=~SDMVPSU, strata=~SDMVSTRA, weight=~WTMEC4YR, nest=T, data=newData) 
+```
+
+##### 3: Visualizing the Y variables, telomere length
+
+We will now view the distribution of the variables 
+```{r}
+svyhist(~TELOMEAN, dsn)
+svyplot(TELOMEAN ~ RIDAGEYR, dsn, xlab='Age(years)', ylab='Telomere length in bp', style='transparent', xlim=c(20, 80)) 
+svyplot(TELOMEAN ~ RIDAGEYR, dsn, xlab='Age(years)', ylab='Telomere length in bp', style='transparent', xlim=c(20, 80), ylim=c(0, 4)) 
+```
+
+From the above, telomere length appears to be negatively associated with age (ie, telomeres are shorter for older individuals, which is in agreement with the literature).
+
+Lets estimate the association size (or correlation) using linear regression. 
+
+##### 4. Conducting initial survey-weighted analyses of the Y and X
+
+-First, we begin by associating telomere length with age, sex, race, and poverty
+
+```{r}
+mod <- svyglm(TELOMEAN ~ RIDAGEYR + RIDAGEYR2 +  female + black + mexican + other_hispanic + other_eth + INDFMPIR, dsn)
+```
+
+How large are the association sizes for telomere length?
+- what is the interpretation of each coefficient in telomere length? Which variable dominates, if any? 
+- which ones can you say are "statistically" not different than zero?
+- interpret the coefficients.
+```{r}
+summary(mod)
+```
+
+Now lets examine some of the exposure biomarkers, such as serum heavy metal lead.
+
+```{r}
+svyhist(~LBXBPB, dsn)
+```
+
+Looks like a long-tailed distribution - lets log transform.
+```{r}
+svyhist(~I(log(LBXBPB+1e-10)), dsn)
+svyplot(I(log(LBXBPB+1e-10)) ~ RIDAGEYR, dsn, ylab='log(serum lead)', xlab='age')
+```
+
+
+The exposure biomarker data is right-skewed and seemingly correlated with age. For our regressions, we log transform the data and copy it into a new object for analysis
+```{r}
+newLogData <- newData
+newLogData[, exposureVars] <- log(newLogData[, exposureVars] + 1e-10)
+dsn <- svydesign(ids=~SDMVPSU, strata=~SDMVSTRA, weight=~WTMEC4YR, nest=T, data=newLogData) # create the design object
+```
+
+##### 5. XWAS pipeline
+
+Recall the pseudo-algorithm:
+
+1. y = [blood pressure values for cohort]
+2. association_list = empty_list()
+3. for each x in list of exposures:
+- association_test=f(x,y)
+- append(association_list, association_test)
+4. multiplicity_correct(association_list)
+
+
+First we define some 'helper' functions that do the individual association tests (using linear regression) in step 3a:
+`buildFormula` builds a formula out of a string for linear regression
+```{r}
+buildFormula <- function(exposureVar, adjustmentVariables = adjustfor) {
+  as.formula(sprintf('%s ~ I(scale(%s)) + %s', 'TELOMEAN', exposureVar, paste(adjustmentVariables, collapse="+")))
+}
+
+testFormula <- buildFormula('LBXBPB')
+print(testFormula)
+
+# test it
+test_mod <- svyglm(testFormula, dsn)
+print(tidy((test_mod))) ## cool, we got one regression to work... now we need to scale this up! [the function tidy is cool, too -- enables us to get a clean data.frame output from a regression model]
+```
+
+```{r}
+association_list <- data.frame() # step 2 of algorithm
+for(exposure in exposureVars) {
+  model <- buildFormula(exposure)
+  #print(model)
+  ## now run the association
+  mod <- svyglm(model, dsn) # step 3a
+  modFrame <- tidy(mod)
+  modFrame$variable <- exposure
+  association_list <- rbind(association_list, modFrame) # step 3b of algorithm
+}
+
+## we are done (almost)
+## we collected the entire model, including adjustment covariates. 
+## filter them out to just look at the exposure associations
+xwas_association_list <- association_list[!(association_list$term %in% adjustfor), ]
+xwas_association_list <- xwas_association_list[!(xwas_association_list$term %in% '(Intercept)'), ]
+
+
+```
+###### Multiplicity correction: controlling the 'False Discovery Rate'
+- use the Benjamini-Yekuteli step-down method to control the False Discovery Rate: https://projecteuclid.org/euclid.aos/1013699998
+
+```{r}
+xwas_association_list$fdr <- p.adjust(xwas_association_list$p.value, method='BY') # elegance in one line of code. (We can also use permutation-based estimations)
+```
+
+###### Visualize: Volcano Plots
+- Association size vs. -log10(pvalue)
+- we draw a signficance threshold where FDR is controlled at 5%. This is the max pvalue that achieves FDR less than 5%
+```{r}
+pvalue_threshold <- max(xwas_association_list[which(xwas_association_list$fdr < 0.05), 'p.value'])
+volcano_plot <- ggplot(xwas_association_list, aes(estimate, -log10(p.value)))
+volcano_plot <- volcano_plot + geom_point()
+volcano_plot <- volcano_plot + geom_hline(yintercept=-log10(pvalue_threshold))
+volcano_plot
+```
+
+###### Table of estimates.
+- Remember that the units are coming straight from the data dictionary and are NOT applicable here (we scaled each variable to have 1SD units in the log space, so therefore the interpretation will not be in the original units [ie, ng/g])
+```{r}
+xwas_association_list <- merge(xwas_association_list, unique(VarDescription.telo[, c('var', 'var_desc')]), by.x='variable', by.y='var')
+knitr::kable(subset(xwas_association_list, fdr < 0.05)[, c('var_desc', 'estimate', 'p.value', 'fdr')])
+```
+
+### Exercises:
+0. How much to the coefficients change for the adjustment variables for each of the correlations?
+1. Attempt to reproduce the findings in Patel et al., IJE 2016 (https://www.ncbi.nlm.nih.gov/pubmed/27059547) using more categories of exposure. How will you handle other X variables, such as self-reported variables?
+2. Execute the XWAS in another phenotype. What are the similarties and differences between your analysis in 1.
+3. How much variance explained in telomeres do the top factors explain? Is this to be expected?
+4. Implement the XWAS without using the `for` operator using the tidyverse suite of commands.
+
+
+

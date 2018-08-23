@@ -32,5 +32,6 @@
 ### Original paper:
 - Patel CJ, et al, International Journal of Epidemiology 2016
 - https://www.ncbi.nlm.nih.gov/pubmed/27059547
+![alt text](https://raw.githubusercontent.com/chiragjp/xwas_with_nhanes_tutorial/master/reproduce_me.png)
 
 

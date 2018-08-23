@@ -25,9 +25,10 @@
 
 
 ### Slide Downloads
-- Part 1, Data analytics to enable X-wide Association Studies (XWASs): 
+- Part 1, Data analytics to enable X-wide Association Studies (XWASs): https://github.com/chiragjp/xwas_with_nhanes_tutorial/blob/master/ISEE%20Data%20Analytics%20Workshop%20083018.pdf
+- Part 2, Introduction to the hands-on tutorial to get you started to executing X-wide Association Studies (XWASs) with survey data:
+https://github.com/chiragjp/xwas_with_nhanes_tutorial/blob/master/ISEE%20Data%20Analytics%20Hands%20On%20082618.pdf
 
-- Part 2, Introduction to the hands-on tutorial to get you started to executing X-wide Association Studies (XWASs) with survey data
 
 ### Original paper:
 - Patel CJ, et al, International Journal of Epidemiology 2016

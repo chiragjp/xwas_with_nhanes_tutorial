@@ -24,8 +24,9 @@
 - or download a pre-knitted file: https://github.com/chiragjp/xwas_with_nhanes_tutorial/blob/master/xwas_tutorial.html
 
 
-### Slides
+### Slide Downloads
 - Part 1, Data analytics to enable X-wide Association Studies (XWASs): 
+
 - Part 2, Introduction to the hands-on tutorial to get you started to executing X-wide Association Studies (XWASs) with survey data
 
 ### Original paper:

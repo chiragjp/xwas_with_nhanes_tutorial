@@ -1,7 +1,9 @@
-## Implement code to execute an X-wide association study (XWAS)! 
-- Starter code to execute an X-wide association study (XWAS) analysis
+## Implement code to execute an X-wide association study (XWAS) in telomere length
+
+![XWAS in Telomere Length](https://raw.githubusercontent.com/chiragjp/xwas_with_nhanes_tutorial/master/reproduce_me.png)
+
 - X-wide association study (XWAS) is a data-driven method to find what variables in the set 'X' are associated with a phenotype (call it Y, e.g., telomere length)
-- Identify exposure variables associated with telomere length in NHANES 1999-2002 participants (as published in Patel CJ, IJE 2016)
+- Starter code to execute an X-wide association study (XWAS) analysis
 - Originally presented at ISEE/ISES 2018, Ottawa, Canada on August 26 2018
 
 ### Contact information:
@@ -32,6 +34,5 @@
 ### Original paper:
 - Patel CJ, et al, International Journal of Epidemiology 2016
 - https://www.ncbi.nlm.nih.gov/pubmed/27059547
-![alt text](https://raw.githubusercontent.com/chiragjp/xwas_with_nhanes_tutorial/master/reproduce_me.png)
 
 

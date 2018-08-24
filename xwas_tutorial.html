@@ -135,6 +135,7 @@ $(document).ready(function () {
 <li>Chirag J Patel (chirag <at> hms dot harvard dot edu)</li>
 <li>Twitter: <span class="citation">@chiragjp</span></li>
 <li>GitHub: <span class="citation">@chiragjp</span></li>
+<li>Github Repository for this tutorial: <a href="https://github.com/chiragjp/xwas_with_nhanes_tutorial" class="uri">https://github.com/chiragjp/xwas_with_nhanes_tutorial</a></li>
 <li>web: <a href="http://www.chiragjpgroup.org" class="uri">http://www.chiragjpgroup.org</a></li>
 </ul>
 </div>
@@ -448,7 +449,7 @@ testFormula &lt;- buildFormula('LBXBPB')
 print(testFormula)</code></pre>
 <pre><code>## I(scale(TELOMEAN)) ~ I(scale(LBXBPB)) + RIDAGEYR + RIDAGEYR2 + 
 ##     female + mexican + black + other_eth + other_hispanic + INDFMPIR
-## &lt;environment: 0x7ff5d18dc910&gt;</code></pre>
+## &lt;environment: 0x7fda972631f8&gt;</code></pre>
 <pre class="r"><code># test it
 test_mod &lt;- svyglm(testFormula, dsn)
 print(tidy((test_mod))) ## cool, we got one regression to work... now we need to scale this up! [the function tidy is cool, too -- enables us to get a clean data.frame output from a regression model]</code></pre>
@@ -626,12 +627,17 @@ knitr::kable(subset(xwas_association_list, fdr &lt; 0.05)[, c('var_desc', 'estim
 </div>
 </div>
 </div>
-<div id="exercises" class="section level3">
-<h3>Exercises:</h3>
+<div id="questions" class="section level3">
+<h3>Questions:</h3>
+<ul>
+<li>Send a ‘pull’ request in GitHub to incorporate your answers in a new version of the .Rmd or R code!</li>
+<li><a href="https://services.github.com/on-demand/github-cli/open-pull-request-github" class="uri">https://services.github.com/on-demand/github-cli/open-pull-request-github</a></li>
+</ul>
 <ol start="0" style="list-style-type: decimal">
+<li>What is your interpretation of the association sizes and pvalues for your XWAS?</li>
 <li>How much to the coefficients change for the adjustment variables for each of the correlations?</li>
 <li>Attempt to reproduce the findings in Patel et al., IJE 2016 (<a href="https://www.ncbi.nlm.nih.gov/pubmed/27059547" class="uri">https://www.ncbi.nlm.nih.gov/pubmed/27059547</a>) using more categories of exposure. How will you handle other X variables, such as self-reported variables?</li>
-<li>When increasing the numbner of variables, how would the pvalue threshold change to accomodate more tests? How would the FDR change, if at all?</li>
+<li>When increasing the number of variables, how would the pvalue threshold change to accommodate more tests? How would the FDR change, if at all?</li>
 <li>Execute the XWAS in another phenotype. What are the similarties and differences between your analysis in 1.</li>
 <li>How much variance explained in telomeres do the top factors explain? Is this to be expected?</li>
 <li>Implement the XWAS without using the <code>for</code> operator using the tidyverse suite of commands.</li>

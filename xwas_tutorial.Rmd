@@ -274,13 +274,16 @@ xwas_association_list <- xwas_association_list[order(xwas_association_list$fdr, 
 knitr::kable(subset(xwas_association_list, fdr < 0.05)[, c('var_desc', 'estimate', 'p.value', 'fdr')])
 ```
 
-### Exercises:
-0. How much to the coefficients change for the adjustment variables for each of the correlations?
-1. Attempt to reproduce the findings in Patel et al., IJE 2016 (https://www.ncbi.nlm.nih.gov/pubmed/27059547) using more categories of exposure. How will you handle other X variables, such as self-reported variables? 
-2. When increasing the numbner of variables, how would the pvalue threshold change to accomodate more tests? How would the FDR change, if at all?
-3. Execute the XWAS in another phenotype. What are the similarties and differences between your analysis in 1.
-4. How much variance explained in telomeres do the top factors explain? Is this to be expected?
-5. Implement the XWAS without using the `for` operator using the tidyverse suite of commands.
+### Questions:
+- Send a 'pull' request in GitHub to incorporate your answers in a new version of the .Rmd or R code!
+- https://services.github.com/on-demand/github-cli/open-pull-request-github
+0. What is your interpretation of the association sizes and pvalues for your XWAS?
+1. How much to the coefficients change for the adjustment variables for each of the correlations?
+2. Attempt to reproduce the findings in Patel et al., IJE 2016 (https://www.ncbi.nlm.nih.gov/pubmed/27059547) using more categories of exposure. How will you handle other X variables, such as self-reported variables? 
+3. When increasing the number of variables, how would the pvalue threshold change to accommodate more tests? How would the FDR change, if at all?
+4. Execute the XWAS in another phenotype. What are the similarties and differences between your analysis in 1.
+5. How much variance explained in telomeres do the top factors explain? Is this to be expected?
+6. Implement the XWAS without using the `for` operator using the tidyverse suite of commands.
 
 
 

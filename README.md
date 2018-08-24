@@ -36,3 +36,14 @@ https://github.com/chiragjp/xwas_with_nhanes_tutorial/blob/master/ISEE%20Data%20
 
 ![XWAS in Telomere Length](https://raw.githubusercontent.com/chiragjp/xwas_with_nhanes_tutorial/master/reproduce_me.png)
 
+### Questions:
+- Send a 'pull' request in GitHub to incorporate your answers in a new version of the .Rmd or R code!
+- https://services.github.com/on-demand/github-cli/open-pull-request-github
+0. What is your interpretation of the association sizes and pvalues for your XWAS?
+1. How much to the coefficients change for the adjustment variables for each of the correlations?
+2. Attempt to reproduce the findings in Patel et al., IJE 2016 (https://www.ncbi.nlm.nih.gov/pubmed/27059547) using more categories of exposure. How will you handle other X variables, such as self-reported variables? 
+3. When increasing the number of variables, how would the pvalue threshold change to accommodate more tests? How would the FDR change, if at all?
+4. Execute the XWAS in another phenotype. What are the similarties and differences between your analysis in 1.
+5. How much variance explained in telomeres do the top factors explain? Is this to be expected?
+6. Implement the XWAS without using the `for` operator using the tidyverse suite of commands.
+

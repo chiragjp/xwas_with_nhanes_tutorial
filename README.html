@@ -121,13 +121,14 @@ $(document).ready(function () {
 </div>
 
 
-<div id="implement-code-to-execute-an-x-wide-association-study-xwas-in-telomere-length" class="section level2">
-<h2>Implement code to execute an X-wide association study (XWAS) in telomere length</h2>
+<div id="implement-code-to-execute-an-x-wide-association-study-xwas-in-telomere-length" class="section level3">
+<h3>Implement code to execute an X-wide association study (XWAS) in telomere length</h3>
 <ul>
 <li>X-wide association study (XWAS) is a data-driven method to find what variables in the set ‘X’ are associated with a phenotype (call it Y, e.g., telomere length)</li>
 <li>Starter code to execute an X-wide association study (XWAS) analysis</li>
 <li>Originally presented at ISEE/ISES 2018, Ottawa, Canada on August 26 2018</li>
 </ul>
+</div>
 <div id="contact-information" class="section level3">
 <h3>Contact information:</h3>
 <ul>
@@ -155,16 +156,16 @@ $(document).ready(function () {
 <div id="execution" class="section level3">
 <h3>Execution</h3>
 <ul>
-<li>download ‘xwas_tutorial.Rmd’ in RStudio from here: <a href="https://github.com/chiragjp/xwas_with_nhanes_tutorial" class="uri">https://github.com/chiragjp/xwas_with_nhanes_tutorial</a></li>
+<li>download ‘xwas_tutorial.Rmd’ in RStudio from here: <a href="https://github.com/chiragjp/xwas_with_nhanes_tutorial/blob/master/xwas_tutorial.Rmd" class="uri">https://github.com/chiragjp/xwas_with_nhanes_tutorial/blob/master/xwas_tutorial.Rmd</a></li>
 <li>knit the .Rmd in Rstudio</li>
 <li>or download a pre-knitted file: <a href="https://github.com/chiragjp/xwas_with_nhanes_tutorial/blob/master/xwas_tutorial.html" class="uri">https://github.com/chiragjp/xwas_with_nhanes_tutorial/blob/master/xwas_tutorial.html</a></li>
 </ul>
 </div>
-<div id="slides" class="section level3">
-<h3>Slides</h3>
+<div id="slide-downloads" class="section level3">
+<h3>Slide Downloads</h3>
 <ul>
-<li>Part 1, Data analytics to enable X-wide Association Studies (XWASs):</li>
-<li>Part 2, Introduction to the hands-on tutorial to get you started to executing X-wide Association Studies (XWASs) with survey data</li>
+<li>Part 1, Data analytics to enable X-wide Association Studies (XWASs): <a href="https://github.com/chiragjp/xwas_with_nhanes_tutorial/blob/master/ISEE%20Data%20Analytics%20Workshop%20083018.pdf">https://github.com/chiragjp/xwas_with_nhanes_tutorial/blob/master/ISEE%20Data%20Analytics%20Workshop%20083018.pdf</a></li>
+<li>Part 2, Introduction to the hands-on tutorial to get you started to executing X-wide Association Studies (XWASs) with survey data: <a href="https://github.com/chiragjp/xwas_with_nhanes_tutorial/blob/master/ISEE%20Data%20Analytics%20Hands%20On%20082618.pdf">https://github.com/chiragjp/xwas_with_nhanes_tutorial/blob/master/ISEE%20Data%20Analytics%20Hands%20On%20082618.pdf</a></li>
 </ul>
 </div>
 <div id="original-paper" class="section level3">
@@ -178,6 +179,21 @@ $(document).ready(function () {
 <p class="caption">XWAS in Telomere Length</p>
 </div>
 </div>
+<div id="questions" class="section level3">
+<h3>Questions:</h3>
+<ul>
+<li>Send a ‘pull’ request in GitHub to incorporate your answers in a new version of the .Rmd or R code!</li>
+<li><a href="https://services.github.com/on-demand/github-cli/open-pull-request-github" class="uri">https://services.github.com/on-demand/github-cli/open-pull-request-github</a></li>
+</ul>
+<ol start="0" style="list-style-type: decimal">
+<li>What is your interpretation of the association sizes and pvalues for your XWAS?</li>
+<li>How much to the coefficients change for the adjustment variables for each of the correlations?</li>
+<li>Attempt to reproduce the findings in Patel et al., IJE 2016 (<a href="https://www.ncbi.nlm.nih.gov/pubmed/27059547" class="uri">https://www.ncbi.nlm.nih.gov/pubmed/27059547</a>) using more categories of exposure. How will you handle other X variables, such as self-reported variables?</li>
+<li>When increasing the number of variables, how would the pvalue threshold change to accommodate more tests? How would the FDR change, if at all?</li>
+<li>Execute the XWAS in another phenotype. What are the similarties and differences between your analysis in 1.</li>
+<li>How much variance explained in telomeres do the top factors explain? Is this to be expected?</li>
+<li>Implement the XWAS without using the <code>for</code> operator using the tidyverse suite of commands.</li>
+</ol>
 </div>
 
 

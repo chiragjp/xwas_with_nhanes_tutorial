@@ -5,8 +5,7 @@
 
 ### Contact information:
 - Chirag J Patel (chirag <at> hms dot harvard dot edu)
-- Twitter: @chiragjp
-- GitHub: @chiragjp
+- Twitter/GitHub: @chiragjp
 - web: http://www.chiragjpgroup.org 
 
 ### Prerequisites for the tutorial:

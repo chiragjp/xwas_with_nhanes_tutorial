@@ -281,7 +281,7 @@ knitr::kable(subset(xwas_association_list, fdr < 0.05)[, c('var_desc', 'estimate
 2. What is your interpretation of the association sizes and pvalues for your XWAS?
 - Hint: "For a 1SD change in the natural log of the biomarker of exposure = ???? change in telomere length..."
 
-3. What are the associations between sociodemographic factors and telomere length?
+3. Recall the chunk of code under heading 4, "Conducting initial survey-weighted analyses of the Y and X". What are the associations between sociodemographic factors for a basepair change in mean telomere length?
 
 4. Take a look at the GWAS catalog for genotypes associated with telomere length using the GWAS catalog:
 (e.g., https://www.ebi.ac.uk/gwas/efotraits/EFO_0004505)

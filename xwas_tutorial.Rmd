@@ -1,5 +1,5 @@
 ---
-title: "Introduction to XWAS with NHANES (survey) data"
+title: "Introduction to XWAS with NHANES!"
 output:
   html_document: default
   html_notebook: default
@@ -60,6 +60,7 @@ ls()
 head(DemoVariables) 
 head(VarDescription)[, c('var', 'var_desc', 'category', 'series')]
 #head(MainTable)
+dim(MainTable)
 ```
 ### Examine the data dictionary for NHANES
 - to execute the XWAS, we need to locate the columns to use in the analysis.
@@ -242,13 +243,14 @@ for(exposure in exposureVars) {
 ## filter them out to just look at the exposure associations
 xwas_association_list <- association_list[!(association_list$term %in% adjustfor), ]
 xwas_association_list <- xwas_association_list[!(xwas_association_list$term %in% '(Intercept)'), ]
-
+head(xwas_association_list)
 ```
 ###### Multiplicity correction: controlling the 'False Discovery Rate'
 - use the Benjamini-Yekuteli step-down method to control the False Discovery Rate: https://projecteuclid.org/euclid.aos/1013699998
 
 ```{r fdr}
 xwas_association_list$fdr <- p.adjust(xwas_association_list$p.value, method='BY') # elegance in one line of code. (We can also use permutation-based estimations)
+head(xwas_association_list[, c('variable', 'estimate', 'p.value', 'fdr')])
 ```
 
 ###### Visualize: Volcano Plots
@@ -264,8 +266,7 @@ volcano_plot
 
 ###### Table of estimates.
 - Remember that the units are coming straight from the data dictionary and are NOT applicable here (we scaled each variable to have 1SD units in the log space, so therefore the interpretation will not be in the original units [ie, ng/g])
-- How would you interpret each estimate? 
-- Hint: "For a 1SD change in the natural log of the biomarker of exposure = ???? change in telomere length..."
+
 ```{r table_of_estimates}
 xwas_association_list <- merge(xwas_association_list, unique(VarDescription.telo[, c('var', 'var_desc')]), by.x='variable', by.y='var')
 ## shave off the units from the variable description as we re-scaled the variables
@@ -274,14 +275,25 @@ xwas_association_list <- xwas_association_list[order(xwas_association_list$fdr, 
 knitr::kable(subset(xwas_association_list, fdr < 0.05)[, c('var_desc', 'estimate', 'p.value', 'fdr')])
 ```
 
-### Questions:
-- Send a 'pull' request in GitHub to incorporate your answers in a new version of the .Rmd or R code!
-- https://services.github.com/on-demand/github-cli/open-pull-request-github
-0. What is your interpretation of the association sizes and pvalues for your XWAS?
+### Required Questions:
+1. What does telomere length measure?
+
+2. What is your interpretation of the association sizes and pvalues for your XWAS?
+- Hint: "For a 1SD change in the natural log of the biomarker of exposure = ???? change in telomere length..."
+
+3. What are the associations between sociodemographic factors and telomere length?
+
+4. Take a look at the GWAS catalog for genotypes associated with telomere length using the GWAS catalog:
+(e.g., https://www.ebi.ac.uk/gwas/efotraits/EFO_0004505)
+What is the max association size between any variant implicated in the GWASs and telomere length?
+
+
+
+### Optional Questions:
 1. How much to the coefficients change for the adjustment variables for each of the correlations?
 2. Attempt to reproduce the findings in Patel et al., IJE 2016 (https://www.ncbi.nlm.nih.gov/pubmed/27059547) using more categories of exposure. How will you handle other X variables, such as self-reported variables? 
 3. When increasing the number of variables, how would the pvalue threshold change to accommodate more tests? How would the FDR change, if at all?
-4. Execute the XWAS in another phenotype. What are the similarties and differences between your analysis in 1.
+4. Execute the XWAS in another phenotype. What are the similarities and differences between your analysis in 1.
 5. How much variance explained in telomeres do the top factors explain? Is this to be expected?
 6. Implement the XWAS without using the `for` operator using the tidyverse suite of commands.
 
